@@ -14,3 +14,4 @@ tower-http = { version = "0.6", features = ["cors", "trace"] }
 tracing = "0.1"
 tracing-subscriber = "0.3"
 time = { version = "0.3", features = ["serde", "formatting", "parsing"] }
+lazy_static = "1.5"
