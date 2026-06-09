@@ -4,6 +4,7 @@ mod error;
 mod handlers;
 mod models;
 mod services;
+mod static_files;
 
 use axum::routing::{get, post};
 use axum::Router;
@@ -26,10 +27,14 @@ async fn main() {
         .route("/api/quiz/{id}/submit", post(handlers::quiz::submit_quiz))
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http())
+        .fallback(static_files::static_handler)
         .with_state(pool);
 
     let addr = format!("{}:{}", cfg.host, cfg.port);
+    let listener = tokio::net::TcpListener::bind(&addr).await.unwrap_or_else(|e| {
+        eprintln!("Failed to bind {}: {}", addr, e);
+        std::process::exit(1);
+    });
     tracing::info!("Server running on {}", addr);
-    let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
