@@ -121,7 +121,7 @@ export default function Quiz() {
             <Select
               value={params.source || "all"}
               onValueChange={(v) =>
-                setParams({ ...params, source: v === "all" ? undefined : v })
+                setParams({ ...params, source: v === "all" ? undefined : (v ?? undefined) })
               }
             >
               <SelectTrigger className="border-white/10 bg-white/5 text-white">
@@ -139,7 +139,7 @@ export default function Quiz() {
             <label className="mb-1 block text-sm text-gray-400">{t.quiz.type}</label>
             <Select
               value={params.type || "en2cn"}
-              onValueChange={(v) => setParams({ ...params, type: v })}
+              onValueChange={(v) => setParams({ ...params, type: v ?? undefined })}
             >
               <SelectTrigger className="border-white/10 bg-white/5 text-white">
                 <SelectValue />

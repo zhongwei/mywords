@@ -33,15 +33,6 @@ export default function WordsList() {
 
   const totalPages = data ? Math.ceil(data.meta.total / data.meta.per_page) : 1;
 
-  const statusColor = (s: string | null | undefined) => {
-    switch (s) {
-      case "mastered": return "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
-      case "review": return "bg-blue-500/20 text-blue-300 border-blue-500/30";
-      case "learning": return "bg-amber-500/20 text-amber-300 border-amber-500/30";
-      default: return "bg-gray-500/20 text-gray-400 border-gray-500/30";
-    }
-  };
-
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold text-white">{t.nav.words}</h1>
@@ -62,7 +53,7 @@ export default function WordsList() {
             className="border-white/10 bg-white/5 pl-10 text-white placeholder:text-gray-500"
           />
         </div>
-        <Select value={source} onValueChange={(v) => { setSource(v === "all" ? "" : v); setPage(1); }}>
+        <Select value={source} onValueChange={(v) => { setSource(v === "all" ? "" : (v ?? "")); setPage(1); }}>
           <SelectTrigger className="w-32 border-white/10 bg-white/5 text-white">
             <SelectValue placeholder={t.words.source} />
           </SelectTrigger>
@@ -72,7 +63,7 @@ export default function WordsList() {
             <SelectItem value="TOEFL">TOEFL</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={status} onValueChange={(v) => { setStatus(v === "all" ? "" : v); setPage(1); }}>
+        <Select value={status} onValueChange={(v) => { setStatus(v === "all" ? "" : (v ?? "")); setPage(1); }}>
           <SelectTrigger className="w-32 border-white/10 bg-white/5 text-white">
             <SelectValue placeholder={t.words.status} />
           </SelectTrigger>
