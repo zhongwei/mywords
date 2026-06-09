@@ -41,10 +41,26 @@ CREATE TABLE IF NOT EXISTS synonyms (
     FOREIGN KEY (word_id) REFERENCES words(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS learning_status (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    word_id INTEGER NOT NULL UNIQUE,
+    status TEXT NOT NULL DEFAULT 'new' CHECK(status IN ('new', 'learning', 'review', 'mastered')),
+    review_count INTEGER NOT NULL DEFAULT 0,
+    correct_count INTEGER NOT NULL DEFAULT 0,
+    last_reviewed_at TEXT,
+    next_review_at TEXT,
+    ease_factor REAL NOT NULL DEFAULT 2.5,
+    interval_days INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (word_id) REFERENCES words(id) ON DELETE CASCADE
+);
+
 CREATE INDEX IF NOT EXISTS idx_words_word ON words(word);
 CREATE INDEX IF NOT EXISTS idx_words_source ON words(source);
 CREATE INDEX IF NOT EXISTS idx_examples_word_id ON examples(word_id);
 CREATE INDEX IF NOT EXISTS idx_synonyms_word_id ON synonyms(word_id);
+CREATE INDEX IF NOT EXISTS idx_learning_status_word_id ON learning_status(word_id);
+CREATE INDEX IF NOT EXISTS idx_learning_status_status ON learning_status(status);
+CREATE INDEX IF NOT EXISTS idx_learning_status_next_review ON learning_status(next_review_at);
 """
 
 
@@ -161,7 +177,13 @@ def main():
 
     conn.commit()
 
-    for table in ["words", "examples", "synonyms"]:
+    print("Initializing learning status...")
+    conn.execute(
+        "INSERT INTO learning_status (word_id) SELECT id FROM words"
+    )
+    conn.commit()
+
+    for table in ["words", "examples", "synonyms", "learning_status"]:
         count = cursor.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
         print(f"  {table}: {count} rows")
 
