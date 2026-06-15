@@ -32,7 +32,7 @@ fn main() {
         return; // web/dist/ is up to date; nothing to do
     }
 
-    println!("[mywords] building frontend (web/src is newer than web/dist)...");
+    println!("cargo:warning=[mywords] building frontend (web/src is newer than web/dist)...");
     maybe_bun_install(web);
     run_bun_build(web);
 }
@@ -68,7 +68,7 @@ fn maybe_bun_install(web: &Path) {
         return;
     }
 
-    println!("[mywords] running `bun install` (node_modules missing or out of date)...");
+    println!("cargo:warning=[mywords] running `bun install` (node_modules missing or out of date)...");
     let output = Command::new("bun")
         .arg("install")
         .current_dir(web)
