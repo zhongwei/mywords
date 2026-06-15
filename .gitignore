@@ -32,3 +32,6 @@ web/node_modules/
 # SQLite runtime files (regenerate on every server run with WAL mode)
 words.db-shm
 words.db-wal
+
+# Superpowers brainstorming mockups
+.superpowers/
