@@ -2,6 +2,8 @@ export default {
   app: {
     title: "MyWords",
     subtitle: "Smart Vocabulary Builder",
+    expandSidebar: "Expand sidebar",
+    collapseSidebar: "Collapse sidebar",
   },
   nav: {
     dashboard: "Dashboard",

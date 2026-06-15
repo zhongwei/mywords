@@ -2,6 +2,8 @@ export default {
   app: {
     title: "MyWords",
     subtitle: "智能单词学习工具",
+    expandSidebar: "展开侧栏",
+    collapseSidebar: "收起侧栏",
   },
   nav: {
     dashboard: "仪表盘",

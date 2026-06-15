@@ -6,6 +6,8 @@ import {
   RefreshCw,
   HelpCircle,
   Languages,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 
 const navItems = [
@@ -15,19 +17,55 @@ const navItems = [
   { path: "/quiz", icon: HelpCircle, key: "quiz" as const },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  collapsed: boolean;
+  onToggle: () => void;
+}
+
+export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { t, locale, setLocale } = useI18n();
 
   return (
-    <aside className="fixed left-0 top-0 z-40 flex h-full w-64 flex-col border-r border-white/10 bg-black/40 backdrop-blur-xl">
-      <div className="flex items-center gap-3 border-b border-white/10 px-6 py-5">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 text-lg font-bold text-white">
+    <aside
+      className={`fixed left-0 top-0 z-40 flex h-full flex-col border-r border-white/10 bg-black/40 backdrop-blur-xl transition-all duration-300 ${
+        collapsed ? "w-16" : "w-64"
+      }`}
+    >
+      <div
+        className={`flex border-b border-white/10 ${
+          collapsed
+            ? "flex-col items-center gap-2 px-2 py-4"
+            : "items-center gap-3 px-6 py-5"
+        }`}
+      >
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 text-lg font-bold text-white">
           M
         </div>
-        <div>
-          <h1 className="text-lg font-bold text-white">{t.app.title}</h1>
-          <p className="text-xs text-violet-300">{t.app.subtitle}</p>
-        </div>
+        {collapsed ? (
+          <button
+            onClick={onToggle}
+            aria-label={t.app.expandSidebar}
+            title={t.app.expandSidebar}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-white/5 hover:text-white"
+          >
+            <PanelLeftOpen className="h-5 w-5" />
+          </button>
+        ) : (
+          <>
+            <div className="min-w-0 flex-1">
+              <h1 className="truncate text-lg font-bold text-white">{t.app.title}</h1>
+              <p className="truncate text-xs text-violet-300">{t.app.subtitle}</p>
+            </div>
+            <button
+              onClick={onToggle}
+              aria-label={t.app.collapseSidebar}
+              title={t.app.collapseSidebar}
+              className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-white/5 hover:text-white"
+            >
+              <PanelLeftClose className="h-5 w-5" />
+            </button>
+          </>
+        )}
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
@@ -36,16 +74,20 @@ export default function Sidebar() {
             key={item.path}
             to={item.path}
             end={item.path === "/"}
+            title={collapsed ? t.nav[item.key] : undefined}
+            aria-label={collapsed ? t.nav[item.key] : undefined}
             className={({ isActive }) =>
-              `flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
+              `flex items-center rounded-lg text-sm font-medium transition-all duration-200 ${
+                collapsed ? "justify-center px-2 py-2.5" : "gap-3 px-4 py-2.5"
+              } ${
                 isActive
                   ? "bg-violet-500/20 text-violet-200 shadow-lg shadow-violet-500/10"
                   : "text-gray-400 hover:bg-white/5 hover:text-white"
               }`
             }
           >
-            <item.icon className="h-5 w-5" />
-            {t.nav[item.key]}
+            <item.icon className="h-5 w-5 flex-shrink-0" />
+            {!collapsed && t.nav[item.key]}
           </NavLink>
         ))}
       </nav>
@@ -53,10 +95,14 @@ export default function Sidebar() {
       <div className="border-t border-white/10 px-3 py-4">
         <button
           onClick={() => setLocale(locale === "zh" ? "en" : "zh")}
-          className="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm text-gray-400 transition-colors hover:bg-white/5 hover:text-white"
+          title={collapsed ? (locale === "zh" ? "English" : "中文") : undefined}
+          aria-label={locale === "zh" ? "English" : "中文"}
+          className={`flex w-full items-center rounded-lg text-sm text-gray-400 transition-colors hover:bg-white/5 hover:text-white ${
+            collapsed ? "justify-center px-2 py-2.5" : "gap-3 px-4 py-2.5"
+          }`}
         >
-          <Languages className="h-5 w-5" />
-          {locale === "zh" ? "English" : "中文"}
+          <Languages className="h-5 w-5 flex-shrink-0" />
+          {!collapsed && (locale === "zh" ? "English" : "中文")}
         </button>
       </div>
     </aside>
