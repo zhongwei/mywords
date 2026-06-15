@@ -25,7 +25,7 @@ export default function WordsList() {
 
   const { data, isLoading } = useWords({
     page,
-    per_page: 50,
+    per_page: 100,
     q: q || undefined,
     source: source || undefined,
     status: status || undefined,
@@ -82,18 +82,24 @@ export default function WordsList() {
         <div className="py-20 text-center text-gray-400">{t.words.noResults}</div>
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(155px,1fr))] gap-3">
             {data.data.map((word) => (
               <button
                 key={word.id}
                 onClick={() => navigate(`/words/${word.id}`)}
-                className="group rounded-xl border border-white/10 bg-white/5 p-4 text-left backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:border-violet-500/30 hover:bg-white/10"
+                className="group rounded-xl border border-white/10 bg-white/5 p-3 text-left backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:border-violet-500/30 hover:bg-white/10"
               >
                 <div className="flex items-start justify-between">
                   <span className="text-lg font-semibold text-white">{word.word}</span>
-                  <Badge variant="outline" className="text-xs border-white/20 text-gray-400">
-                    {word.source}
-                  </Badge>
+                  {word.source && (
+                    <Badge
+                      variant="outline"
+                      title={word.source}
+                      className="text-xs border-white/20 text-gray-400"
+                    >
+                      {word.source.toLowerCase() === "toefl" ? "T" : "G"}
+                    </Badge>
+                  )}
                 </div>
                 {word.phonetic && (
                   <p className="mt-1 text-sm text-violet-300">{word.phonetic}</p>
